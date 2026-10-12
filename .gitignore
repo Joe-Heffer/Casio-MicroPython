@@ -222,3 +222,4 @@ __marimo__/
 # Casio-MicroPython: smoke test renders and desktop stand-in output
 smoke-output/
 casioplot*.png
+.micropython/

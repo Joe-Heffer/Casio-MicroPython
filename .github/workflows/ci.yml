@@ -3,21 +3,28 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   check:
+    name: Checks and desktop smoke test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.10 is the oldest version the README supports.
+        python-version: ["3.10", "3.13"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
 
-      - name: Line count and layout check
+      - name: Line count, layout and import check
         run: python tools/check_programs.py
 
       - name: Syntax check
@@ -29,8 +36,31 @@ jobs:
         run: python tools/smoke_test.py smoke-output
 
       - name: Upload rendered screens
-        if: always()
+        if: always() && matrix.python-version == '3.13'
         uses: actions/upload-artifact@v4
         with:
           name: smoke-output
           path: smoke-output/
+
+  micropython:
+    name: MicroPython 1.9.4 (calculator version)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Cache MicroPython build
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .micropython
+          key: micropython-1.9.4-${{ runner.os }}-${{ hashFiles('tools/build_micropython.sh') }}
+
+      - name: Build MicroPython 1.9.4
+        run: sh tools/build_micropython.sh
+
+      - name: Compile and run programs under MicroPython 1.9.4
+        run: python tools/micropython_test.py
