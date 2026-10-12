@@ -8,6 +8,7 @@ Each program is a single `.py` file of no more than 300 lines, the limit for one
 
 | Program | Description | Lines | Tested on |
 |---|---|---|---|
+| [cellular_automaton](programs/cellular_automaton/) | Elementary cellular automaton (Wolfram rules 0–255), drawn row by row | 93 | Desktop stand-in |
 | [mandelbrot](programs/mandelbrot/) | Mandelbrot set in colour, drawn column by column | 88 | Desktop stand-in |
 
 ## Repository layout
