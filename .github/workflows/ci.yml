@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Line count and layout check
+        run: python tools/check_programs.py
+
+      - name: Syntax check
+        run: python -m compileall -q programs tools
+
+      - name: Smoke test with desktop casioplot stand-in
+        env:
+          CASIOPLOT_HEADLESS: "1"
+        run: python tools/smoke_test.py smoke-output
+
+      - name: Upload rendered screens
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-output
+          path: smoke-output/

@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Casio-MicroPython: smoke test renders and desktop stand-in output
+smoke-output/
+casioplot*.png
