@@ -7,6 +7,8 @@ Thank you for adding a program. Please follow these rules so that every program 
 * **300 lines at most.** The calculator’s Python app holds up to 300 lines per file. Lines must also be 255 characters or fewer.
 * **ASCII only.** The calculator cannot show other characters, so avoid accented letters, curly quotes, arrows and emoji in the `.py` file, including in comments.
 * **MicroPython 1.9.4.** Do not use f-strings. Use only the modules listed in [docs/limits.md](docs/limits.md).
+* **Pass whole numbers to `casioplot`.** Use `int()` on coordinates and colour values. The CI stand-in rejects floats because the calculator may.
+* **End with `show_screen()`.** Anything drawn after the last call is not shown.
 * **One folder per program.** Put it in `programs/<name>/`, named in lower case with hyphens or underscores. The file inside must be `<name>.py`.
 * **A README is required.** Copy [docs/program-readme-template.md](docs/program-readme-template.md) to `programs/<name>/README.md` and fill it in, including the line count and memory notes.
 * **A screenshot is required.** Put at least one image in `programs/<name>/screenshots/`. A screenshot from the calculator or the emulator is best. If you use the desktop stand-in, say so in the caption.
@@ -31,7 +33,13 @@ pip install -r requirements-dev.txt
 python tools/check_programs.py
 python -m compileall -q programs tools
 python tools/smoke_test.py
+
+# Linux or macOS: run under MicroPython 1.9.4, as CI does
+sh tools/build_micropython.sh
+python tools/micropython_test.py
 ```
+
+See [What CI checks](README.md#what-ci-checks) for what these tests catch and what they miss.
 
 Then:
 
