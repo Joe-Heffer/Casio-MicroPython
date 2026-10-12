@@ -7,6 +7,7 @@ For each programs/<name>/ folder this checks that:
   * no line is longer than 255 characters
   * the file is plain ASCII (the calculator cannot show other characters)
   * there are no f-strings (not in MicroPython 1.9.4)
+  * it imports only modules the calculator has (ALLOWED_MODULES)
   * README.md and a screenshots/ folder exist
 
 Exits with status 1 if any check fails.
@@ -18,6 +19,10 @@ import sys
 
 MAX_LINES = 300
 MAX_LINE_LENGTH = 255
+
+# Modules listed in Casio's fx-CG100 user's guide (see docs/limits.md).
+ALLOWED_MODULES = {"casioplot", "math", "random", "turtle", "matplotlib",
+                   "matplotlib.pyplot"}
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,6 +53,16 @@ def check_source(path):
     for node in ast.walk(tree):
         if isinstance(node, ast.JoinedStr):
             problems.append("line %d uses an f-string" % node.lineno)
+        if isinstance(node, ast.Import):
+            names = [alias.name for alias in node.names]
+        elif isinstance(node, ast.ImportFrom):
+            names = [node.module or "."]
+        else:
+            names = []
+        for module in names:
+            if module not in ALLOWED_MODULES:
+                problems.append("line %d imports %s, which the calculator "
+                                "does not have" % (node.lineno, module))
 
     return len(lines), problems
 

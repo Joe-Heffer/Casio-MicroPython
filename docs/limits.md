@@ -14,7 +14,7 @@ These are the limits that matter when writing programs for this repository. Wher
 | Python heap (RAM) | Unknown | No published figure found |
 | Speed | Unknown | No published figure found |
 
-`tools/check_programs.py` enforces the line count, line length and ASCII rules.
+`tools/check_programs.py` enforces the line count, line length, ASCII and module rules. `tools/micropython_test.py` runs each program under MicroPython 1.9.4 with an assumed 32 KB heap; change that figure in the script if a real calculator shows a different one.
 
 ## Modules
 
@@ -44,6 +44,7 @@ Do not assume any other standard library module is present.
 MicroPython 1.9.4 is older than most desktop Python and lacks some features:
 
 * No f-strings (added in MicroPython 1.17). Use `"%d" % n` or `str(n)` instead. `tools/check_programs.py` rejects f-strings.
+* No assignment expressions (`:=`), `match` statements or other newer syntax. `tools/micropython_test.py` compiles each program with the 1.9.4 compiler to catch these.
 * A smaller standard library. See the module list above.
 
 ## Memory and speed
