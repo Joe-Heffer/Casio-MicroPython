@@ -65,7 +65,9 @@ def run(name, source, output_dir):
 
 
 def main(argv):
-    output_dir = argv[1] if len(argv) > 1 else os.path.join(ROOT, "smoke-output")
+    # Absolute, because each program runs with its own folder as the cwd.
+    output_dir = os.path.abspath(
+        argv[1] if len(argv) > 1 else os.path.join(ROOT, "smoke-output"))
     os.makedirs(output_dir, exist_ok=True)
 
     failed = False
